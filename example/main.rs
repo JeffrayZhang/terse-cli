@@ -19,7 +19,12 @@ fn command_three(a: i32, b: i32) -> String {
     format!("the difference is {}", a - b)
 }
 
-subcommands!(my_subcommands, [command_two, command_three]);
+#[command]
+fn command_four() -> String {
+    "command four".to_string()
+}
+
+subcommands!(my_subcommands, [command_two, command_three, command_four]);
 subcommands!(cli, [command_one, my_subcommands]);
 
 fn main() {

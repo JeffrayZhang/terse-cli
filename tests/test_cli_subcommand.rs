@@ -35,6 +35,39 @@ pub fn test_command_macro() {
     assert_eq!(out_stream.to_string(), expected.to_string());
 }
 
+
+
+#[test]
+pub fn test_command_macro_no_args() {
+    let in_stream = quote! {
+        fn my_func() -> i32 {
+            42
+        }
+    };
+    let attr_stream = quote! { #[subcommand] };
+    let out_stream = command(attr_stream, in_stream).unwrap();
+    let expected = quote! {
+        mod my_func {
+            use super::my_func;
+            use clap::{command, Parser};
+        
+            #[derive(Parser)]
+            #[command(version, about, long_about = None)]
+            pub struct Args {}
+        
+            pub fn run(Args {}: Args) {
+                let result = my_func();
+                println!("{}", result);
+            }
+        }
+
+        fn my_func() -> i32 {
+            42
+        }        
+    };
+    assert_eq!(out_stream.to_string(), expected.to_string());
+}
+
 #[test]
 pub fn test_subcommands_macro() {
     let in_stream = quote! {
