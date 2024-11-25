@@ -1,0 +1,14 @@
+[package]
+name = "terse_cli_lib"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+convert_case = "0.6.0"
+proc-macro2 = "1.0.92"
+quote = "1.0.37"
+some-error = { path = "../vendor/some-error" }
+syn = { version = "2.0.89", features = ["full"] }
+
+[lib]
+path = "lib.rs"

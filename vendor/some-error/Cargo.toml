@@ -1,0 +1,17 @@
+[package]
+name = "some-error"
+version = "0.5.0"
+authors = ["jam1garner <8260240+jam1garner@users.noreply.github.com>"]
+edition = "2018"
+description = "A library for creating and using anonymous sum types as errors in Rust "
+license = "MIT"
+documentation = "https://docs.rs/some-error"
+
+[lib]
+proc-macro = true
+path = "lib.rs"
+
+[dependencies]
+syn = { version = "1", features = ["full"] }
+quote = "1"
+proc-macro2 = "1"

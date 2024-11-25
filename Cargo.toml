@@ -1,0 +1,12 @@
+[package]
+name = "terse-cli-workspace"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+terse_cli_lib = { path = "./terse_cli_lib" }
+quote = "1.0.37"
+pretty_assertions = "1.4.1"
+
+[workspace]
+members = ["terse_cli_lib", "terse_cli", "example"]
