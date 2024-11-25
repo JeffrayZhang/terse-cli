@@ -19,6 +19,7 @@ fn command_three(a: i32, b: i32) -> String {
     format!("the difference is {}", a - b)
 }
 
+/// Example: cargo run -- my-subcommands command-four
 #[command]
 fn command_four() -> String {
     "command four".to_string()

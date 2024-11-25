@@ -5,6 +5,15 @@ A wrapper around [clap](https://github.com/clap-rs/clap) that lets you build CLI
 
 Modeled after [tiangolo's typer python library](https://github.com/fastapi/typer), you simply define your commands and subcommands as functions and annotate them with the `#[command]` attribute.
 
+## Current Status: Alpha
+
+This is a work in progress. The core functionality is implemented, but if you want any customization on how your CLI is used (e.g. positional arguments, custom help messages, etc.) those things are not yet supported.
+
+Known issues:
+- [ ] every command must have a return type that implements `Display`
+- [ ] positional arguments are not yet supported
+- [ ] comments on arguments/subcommands are not yet supported
+
 
 ## Installation
 
@@ -60,10 +69,3 @@ fn main() {
 // you can also use `--help` as you would expect
 // Example: cargo run -- my-subcommands --help
 ```
-
-
-#### Current Status: Alpha
-
-This is a work in progress. The core functionality is implemented, but if you want any customization on how your CLI is used (e.g. positional arguments, custom help messages, etc.) those things are not yet supported.
-
-
