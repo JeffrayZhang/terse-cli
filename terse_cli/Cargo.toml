@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 proc-macro2 = "1.0.92"
-terse_cli_lib = { path = "../terse_cli_lib" }
+terse_cli_lib = { path = "../terse_cli_lib", version = "0.1.0" }
 
 [lib]
 proc-macro = true
