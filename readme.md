@@ -5,6 +5,25 @@ A wrapper around [clap](https://github.com/clap-rs/clap) that lets you build CLI
 
 Modeled after [tiangolo's typer python library](https://github.com/fastapi/typer), you simply define your commands and subcommands as functions and annotate them with the `#[command]` attribute.
 
+
+## Installation
+
+Make sure you're using nightly rust:
+
+```sh
+$ cat > rust-toolchain.toml <<EOF
+[toolchain]
+channel = "nightly"
+EOF
+```
+
+Install both clap and terse_cli:
+
+```sh
+$ cargo add clap --features derive
+$ cargo add terse_cli
+```
+
 ## Example
 
 Below snippet is from [./example/main.rs](./example/main.rs).
