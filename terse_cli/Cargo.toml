@@ -1,10 +1,12 @@
 [package]
 name = "terse_cli"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["David McNamee <david@mcnamee.io>", "Jeffray Zhang <zhangjeffray@gmail.com>"]
 edition = "2021"
 description = "A library for building no-boilerplate CLI apps"
 license = "MIT"
+repository = "https://github.com/JeffrayZhang/terse-cli"
+homepage = "https://github.com/JeffrayZhang/terse-cli"
 
 [dependencies]
 proc-macro2 = "1.0.92"
