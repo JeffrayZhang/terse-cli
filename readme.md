@@ -1,9 +1,9 @@
 
 # Terse CLI
 
-A wrapper around [clap](TODO) that lets you build CLI applications with very little boilerplate code.
+A wrapper around [clap](https://github.com/clap-rs/clap) that lets you build CLI applications with very little boilerplate code.
 
-Modeled after [tiangolo's typer python library](TODO), you simply define your commands and subcommands as functions and annotate them with the `#[command]` attribute.
+Modeled after [tiangolo's typer python library](https://github.com/fastapi/typer), you simply define your commands and subcommands as functions and annotate them with the `#[command]` attribute.
 
 ## Example
 
