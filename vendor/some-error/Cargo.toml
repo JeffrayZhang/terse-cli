@@ -1,6 +1,6 @@
 [package]
-name = "some-error"
-version = "0.5.0"
+name = "some_error_fork"
+version = "0.5.1"
 authors = ["jam1garner <8260240+jam1garner@users.noreply.github.com>"]
 edition = "2018"
 description = "A library for creating and using anonymous sum types as errors in Rust "

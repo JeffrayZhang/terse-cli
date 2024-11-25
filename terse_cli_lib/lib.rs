@@ -3,7 +3,7 @@
 use convert_case::{Case, Casing};
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
-use some_error::some_error;
+use some_error_fork::some_error;
 use syn::parse::{Parse, ParseStream};
 use syn::{bracketed, parse2, Attribute, Ident, ItemFn, Token};
 
