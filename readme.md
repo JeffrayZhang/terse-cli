@@ -12,8 +12,7 @@ This is a work in progress. The core functionality is implemented, but if you wa
 Known issues:
 - [ ] every command must have a return type that implements `Display`
 - [ ] positional arguments are not yet supported
-- [ ] comments on arguments/subcommands are not yet supported
-
+- [ ] argument docs are not yet supported
 
 ## Installation
 
@@ -59,8 +58,19 @@ fn command_three(a: i32, b: i32) -> String {
     format!("the difference is {}", a - b)
 }
 
-subcommands!(my_subcommands, [command_two, command_three]);
-subcommands!(cli, [command_one, my_subcommands]);
+/// Example: cargo run -- my-subcommands command-four
+#[command]
+fn command_four() -> String {
+    "command four".to_string()
+}
+
+subcommands!(
+    /// These are the subcommands
+    my_subcommands, [command_two, command_three, command_four]);
+
+subcommands!(
+    /// Example docs for the "root"
+    cli, [command_one, my_subcommands]);
 
 fn main() {
     cli::run(cli::Args::parse());
@@ -68,4 +78,5 @@ fn main() {
 
 // you can also use `--help` as you would expect
 // Example: cargo run -- my-subcommands --help
+
 ```
