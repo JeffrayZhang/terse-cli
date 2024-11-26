@@ -40,6 +40,7 @@ pub fn test_command_macro() {
 #[test]
 pub fn test_command_macro_no_args() {
     let in_stream = quote! {
+        /// doc comment test
         fn my_func() -> i32 {
             42
         }
@@ -53,6 +54,7 @@ pub fn test_command_macro_no_args() {
         
             #[derive(Parser)]
             #[command(version, about, long_about = None)]
+            #[doc = r" doc comment test"]
             pub struct Args {}
         
             pub fn run(Args {}: Args) {
@@ -61,6 +63,7 @@ pub fn test_command_macro_no_args() {
             }
         }
 
+        #[doc = r" doc comment test"]
         fn my_func() -> i32 {
             42
         }        
