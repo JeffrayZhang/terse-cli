@@ -242,7 +242,7 @@ dependencies = [
 
 [[package]]
 name = "terse_cli"
-version = "0.1.3"
+version = "0.1.4"
 dependencies = [
  "proc-macro2",
  "terse_cli_lib",
@@ -250,7 +250,7 @@ dependencies = [
 
 [[package]]
 name = "terse_cli_lib"
-version = "0.1.1"
+version = "0.1.2"
 dependencies = [
  "convert_case",
  "proc-macro2",
