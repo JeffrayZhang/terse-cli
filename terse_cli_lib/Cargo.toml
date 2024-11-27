@@ -10,7 +10,6 @@ license = "MIT"
 convert_case = "0.6.0"
 proc-macro2 = "1.0.92"
 quote = "1.0.37"
-some_error_fork = { path = "../vendor/some-error", version = "0.5.1" }
 syn = { version = "2.0.89", features = ["full"] }
 
 [lib]

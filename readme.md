@@ -16,15 +16,6 @@ Known issues:
 
 ## Installation
 
-Make sure you're using nightly rust:
-
-```sh
-$ cat > rust-toolchain.toml <<EOF
-[toolchain]
-channel = "nightly"
-EOF
-```
-
 Install both clap and terse_cli:
 
 ```sh
