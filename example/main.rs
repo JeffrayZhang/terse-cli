@@ -25,8 +25,13 @@ fn command_four() -> String {
     "command four".to_string()
 }
 
-subcommands!(my_subcommands, [command_two, command_three, command_four]);
-subcommands!(cli, [command_one, my_subcommands]);
+subcommands!(
+    /// These are the subcommands
+    my_subcommands, [command_two, command_three, command_four]);
+
+subcommands!(
+    /// Example docs for the "root"
+    cli, [command_one, my_subcommands]);
 
 fn main() {
     cli::run(cli::Args::parse());

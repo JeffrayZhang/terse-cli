@@ -7,6 +7,10 @@ use some_error_fork::some_error;
 use syn::parse::{Parse, ParseStream};
 use syn::{bracketed, parse2, Attribute, Ident, ItemFn, Token};
 
+fn extract_docs(a: &[Attribute]) -> impl Iterator<Item = &Attribute> {
+    a.iter().filter(|a| a.path().is_ident("doc"))
+}
+
 /// don't use this directly, use apps/macros instead
 #[some_error]
 pub fn command(
@@ -34,6 +38,8 @@ pub fn command(
         .into_iter()
         .unzip();
 
+    let docs = extract_docs(&input.attrs);
+
     let expanded = quote! {
         mod #fn_name {
             use super::#fn_name;
@@ -41,6 +47,7 @@ pub fn command(
 
             #[derive(Parser)]
             #[command(version, about, long_about = None)]
+            #(#docs)*
             pub struct Args {
                 #(#fields),*
             }
@@ -60,35 +67,41 @@ pub fn subcommands(
     item: TokenStream,
 ) -> Result<TokenStream, InvalidIdentifierError + InvalidIdentifierListError> {
     let MergeSubcommandsInput {
+        sub_doc,
         cli_ident,
         subcommands,
     } = parse2::<MergeSubcommandsInput>(item).map_err(|err| InvalidIdentifierListError {
         message: "subcommands only accepts lists of identifiers",
         err,
     })?;
-    let idents: Vec<_> = subcommands
-        .into_iter()
-        .map(|subcommand| subcommand.ident)
-        .collect();
 
-    let match_arms = idents.iter().map(|ident| {
+    let match_arms = subcommands.iter().map(|sc| {
+        let ident = &sc.ident;
         let cmd_name = get_command_name(ident);
         quote! {
             Subcommands::#cmd_name(args) => #ident::run(args)
         }
     });
-    let command_enum_fields = idents.iter().map(|ident| {
+    let command_enum_fields = subcommands.iter().map(|sc| {
+        let docs = extract_docs(&sc.attrs);
+        let ident = &sc.ident;
         let cmd_name = get_command_name(ident);
-        quote! { #cmd_name(#ident::Args) }
+        quote! { 
+            #(#docs)*
+            #cmd_name(#ident::Args)
+        }
     });
-    let idents_tokens = idents.iter().map(|ident| ident.to_token_stream());
+    let idents_tokens = subcommands.iter().map(|sc| sc.ident.to_token_stream());
+    let sub_doc_mod = sub_doc.clone();
 
     let expanded = quote! {
+        #(#sub_doc_mod)*
         mod #cli_ident {
             use super::{#(#idents_tokens),*};
             use clap::{command, Parser, Subcommand};
 
             #[derive(Subcommand)]
+            #(#sub_doc)*
             pub enum Subcommands {
                 #(#command_enum_fields),*
             }
@@ -116,6 +129,7 @@ struct Subcommand {
 }
 
 struct MergeSubcommandsInput {
+    sub_doc: Vec<Attribute>,
     cli_ident: Ident,
     subcommands: Vec<Subcommand>,
 }
@@ -130,6 +144,13 @@ impl Parse for Subcommand {
 
 impl Parse for MergeSubcommandsInput {
     fn parse(input: ParseStream) -> syn::Result<Self> {
+        // parse any doc comments attached to the cli_ident
+        let sub_doc = Attribute::parse_outer(input)
+            .unwrap_or_default()
+            .into_iter()
+            .filter(|attr| attr.path().is_ident("doc"))
+            .collect::<Vec<_>>();
+
         let cli_ident: Ident = input.parse()?;
         input.parse::<Token![,]>()?;
         let content;
@@ -137,6 +158,7 @@ impl Parse for MergeSubcommandsInput {
         let subcommands: syn::punctuated::Punctuated<Subcommand, Token![,]> =
             content.parse_terminated(Subcommand::parse, Token![,])?;
         Ok(MergeSubcommandsInput {
+            sub_doc,
             cli_ident,
             subcommands: subcommands.into_iter().collect(),
         })
