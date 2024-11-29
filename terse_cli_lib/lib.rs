@@ -1,9 +1,6 @@
-#![feature(let_chains)]
-
 use convert_case::{Case, Casing};
 use proc_macro2::TokenStream;
 use quote::{quote, ToTokens};
-use some_error_fork::some_error;
 use syn::parse::{Parse, ParseStream};
 use syn::{bracketed, parse2, Attribute, Ident, ItemFn, Token};
 
@@ -11,16 +8,22 @@ fn extract_docs(a: &[Attribute]) -> impl Iterator<Item = &Attribute> {
     a.iter().filter(|a| a.path().is_ident("doc"))
 }
 
+#[derive(Debug)]
+pub enum CommandMacroError {
+    InvalidCliArgumentError(InvalidCliArgumentError),
+    InvalidSubcommandFunctionError(InvalidSubcommandFunctionError),
+}
+
 /// don't use this directly, use apps/macros instead
-#[some_error]
 pub fn command(
     _attr: TokenStream,
     item: TokenStream,
-) -> Result<TokenStream, InvalidCliArgumentError + InvalidSubcommandFunctionError> {
-    let input = parse2::<ItemFn>(item).map_err(|err| InvalidSubcommandFunctionError {
+) -> Result<TokenStream, CommandMacroError> {
+    let input = parse2::<ItemFn>(item).map_err(|err| CommandMacroError::InvalidSubcommandFunctionError(InvalidSubcommandFunctionError {
         message: "Failed to parse function",
-        err,
-    })?;
+            err,
+        }),
+    )?;
     let fn_name = &input.sig.ident;
     let args = &input.sig.inputs;
     let (fields, arg_names): (Vec<_>, Vec<_>) = args
@@ -29,10 +32,10 @@ pub fn command(
             syn::FnArg::Typed(syn::PatType { pat, ty, .. }) => {
                 Ok((quote! { #[arg(long)] #pat: #ty }, quote! { #pat }))
             }
-            _ => Err(InvalidCliArgumentError(format!(
+            _ => Err(CommandMacroError::InvalidCliArgumentError(InvalidCliArgumentError(format!(
                 "Invalid cli argument: {}",
                 arg.to_token_stream()
-            ))),
+            )))),
         })
         .collect::<Result<Vec<_>, _>>()?
         .into_iter()
@@ -61,19 +64,24 @@ pub fn command(
     Ok(expanded)
 }
 
+#[derive(Debug)]
+pub enum SubcommandsMacroError {
+    InvalidIdentifierError(InvalidIdentifierError),
+    InvalidIdentifierListError(InvalidIdentifierListError),
+}
+
 /// don't use this directly, use apps/macros instead
-#[some_error]
 pub fn subcommands(
     item: TokenStream,
-) -> Result<TokenStream, InvalidIdentifierError + InvalidIdentifierListError> {
+) -> Result<TokenStream, SubcommandsMacroError> {
     let MergeSubcommandsInput {
         sub_doc,
         cli_ident,
         subcommands,
-    } = parse2::<MergeSubcommandsInput>(item).map_err(|err| InvalidIdentifierListError {
+    } = parse2::<MergeSubcommandsInput>(item).map_err(|err| SubcommandsMacroError::InvalidIdentifierListError(InvalidIdentifierListError {
         message: "subcommands only accepts lists of identifiers",
         err,
-    })?;
+    }))?;
 
     let match_arms = subcommands.iter().map(|sc| {
         let ident = &sc.ident;
